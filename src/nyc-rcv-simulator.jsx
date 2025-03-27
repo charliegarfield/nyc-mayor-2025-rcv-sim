@@ -16,16 +16,16 @@ const NYCMayoralPrimarySimulator = () => {
 
   // State for initial vote percentages based on recent polling data
   const [initialVotes, setInitialVotes] = useState({
-    "Andrew Cuomo": 33,
-    "Eric Adams": 12,
-    "Brad Lander": 8,
-    "Scott Stringer": 7,
-    "Zohran Mamdani": 5,
-    "Jessica Ramos": 4,
+    "Andrew Cuomo": 47,
+    "Zohran Mamdani": 17,
+    "Brad Lander": 10,
+    "Eric Adams": 8,
+    "Scott Stringer": 6,
+    "Adrienne Adams": 5,
     "Zellnor Myrie": 3,
-    "Adrienne Adams": 3,
-    "Michael Blake": 2, 
-    "Whitney Tilson": 1
+    "Jessica Ramos": 2,
+    "Whitney Tilson": 1.3,
+    "Michael Blake": .7 
   });
 
   // Normalize the initial votes when component mounts to ensure they add up to 100%
@@ -47,7 +47,7 @@ const NYCMayoralPrimarySimulator = () => {
   const [exhaustionRates, setExhaustionRates] = useState({
     "Eric Adams": 25,
     "Andrew Cuomo": 22, 
-    "Brad Lander": 15,
+    "Brad Lander": 12,
     "Adrienne Adams": 18,
     "Jessica Ramos": 15,
     "Zellnor Myrie": 17,
@@ -77,37 +77,37 @@ const NYCMayoralPrimarySimulator = () => {
     "Zellnor Myrie": "progressive",
     "Brad Lander": "progressive",
     "Scott Stringer": "moderate",
-    "Adrienne Adams": "moderate",
+    "Adrienne Adams": "progressive",
     "Michael Blake": "moderate",
-    "Whitney Tilson": "conservative",
+    "Whitney Tilson": "moderate",
     "Eric Adams": "conservative",
-    "Andrew Cuomo": "moderate"
+    "Andrew Cuomo": "conservative"
   });
   
   // Make modifier values editable
   const [ideologyModifiers, setIdeologyModifiers] = useState({
     // Progressive candidates
     "progressive": {
-      "Zohran Mamdani": 1, 
+      "Zohran Mamdani": .3, // Mamdani does weirdly poorly among progressive RCVs?
       "Jessica Ramos": 1,
       "Zellnor Myrie": 0.8,
-      "Brad Lander": 0.8,
+      "Brad Lander": 1,
       "Scott Stringer": 0.3,
       "Adrienne Adams": -0.2,
       "Michael Blake": -0.3,
       "Whitney Tilson": -0.6,
       "Eric Adams": -0.7,
-      "Andrew Cuomo": -0.7
+      "Andrew Cuomo": -0.9
     },
     // Moderate candidates
     "moderate": {
-      "Andrew Cuomo": 0.8,
+      "Andrew Cuomo": -0.7, // RCVers, except Adams, hate Cuomo?
+      "Eric Adams": -0.7, // Same thing with Adams for some reason?
       "Adrienne Adams": 0.7,
-      "Eric Adams": 0.6,
       "Scott Stringer": 0.4,
       "Michael Blake": 0.4,
       "Whitney Tilson": 0.3,
-      "Brad Lander": -0.2,
+      "Brad Lander": 0.5,
       "Zellnor Myrie": -0.3,
       "Jessica Ramos": -0.5,
       "Zohran Mamdani": -0.8
@@ -116,7 +116,7 @@ const NYCMayoralPrimarySimulator = () => {
     "conservative": {
       "Eric Adams": 0.9,
       "Whitney Tilson": 0.8,
-      "Andrew Cuomo": 0.7,
+      "Andrew Cuomo": 0.3,
       "Michael Blake": 0.4,
       "Scott Stringer": 0.1,
       "Adrienne Adams": 0.1,
