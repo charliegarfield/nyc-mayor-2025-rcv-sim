@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 
 const NYCMayoralPrimarySimulator = () => {
   const candidates = [
-    "Eric Adams",
     "Andrew Cuomo",
     "Brad Lander",
     "Adrienne Adams",
@@ -17,12 +16,11 @@ const NYCMayoralPrimarySimulator = () => {
   // State for initial vote percentages based on recent polling data
   const [initialVotes, setInitialVotes] = useState({
     "Andrew Cuomo": 47,
-    "Zohran Mamdani": 17,
-    "Brad Lander": 10,
-    "Eric Adams": 8,
-    "Scott Stringer": 6,
-    "Adrienne Adams": 5,
-    "Zellnor Myrie": 3,
+    "Zohran Mamdani": 19,
+    "Brad Lander": 12,
+    "Scott Stringer": 8,
+    "Adrienne Adams": 6,
+    "Zellnor Myrie": 4,
     "Jessica Ramos": 2,
     "Whitney Tilson": 1.3,
     "Michael Blake": .7 
@@ -45,7 +43,6 @@ const NYCMayoralPrimarySimulator = () => {
 
   // State for ballot exhaustion rates based on candidate profiles
   const [exhaustionRates, setExhaustionRates] = useState({
-    "Eric Adams": 25,
     "Andrew Cuomo": 22, 
     "Brad Lander": 12,
     "Adrienne Adams": 18,
@@ -80,7 +77,6 @@ const NYCMayoralPrimarySimulator = () => {
     "Adrienne Adams": "progressive",
     "Michael Blake": "moderate",
     "Whitney Tilson": "moderate",
-    "Eric Adams": "conservative",
     "Andrew Cuomo": "conservative"
   });
   
@@ -96,13 +92,11 @@ const NYCMayoralPrimarySimulator = () => {
       "Adrienne Adams": -0.2,
       "Michael Blake": -0.3,
       "Whitney Tilson": -0.6,
-      "Eric Adams": -0.7,
       "Andrew Cuomo": -0.9
     },
     // Moderate candidates
     "moderate": {
       "Andrew Cuomo": -0.7, // RCVers, except Adams, hate Cuomo?
-      "Eric Adams": -0.7, // Same thing with Adams for some reason?
       "Adrienne Adams": 0.7,
       "Scott Stringer": 0.4,
       "Michael Blake": 0.4,
@@ -114,7 +108,6 @@ const NYCMayoralPrimarySimulator = () => {
     },
     // Conservative/pro-business candidates
     "conservative": {
-      "Eric Adams": 0.9,
       "Whitney Tilson": 0.8,
       "Andrew Cuomo": 0.3,
       "Michael Blake": 0.4,
