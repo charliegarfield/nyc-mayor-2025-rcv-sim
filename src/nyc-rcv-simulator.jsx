@@ -15,15 +15,15 @@ const NYCMayoralPrimarySimulator = () => {
 
   // State for initial vote percentages based on recent polling data
   const [initialVotes, setInitialVotes] = useState({
-    "Andrew Cuomo": 47,
-    "Zohran Mamdani": 19,
-    "Brad Lander": 12,
-    "Scott Stringer": 8,
-    "Adrienne Adams": 6,
-    "Zellnor Myrie": 4,
-    "Jessica Ramos": 2,
-    "Whitney Tilson": 1.3,
-    "Michael Blake": .7 
+    "Andrew Cuomo": 48.54,
+    "Zohran Mamdani": 20.51,
+    "Brad Lander": 8.92,
+    "Scott Stringer": 6.37,
+    "Adrienne Adams": 6.24,
+    "Jessica Ramos": 4.20,
+    "Zellnor Myrie": 3.82,
+    "Michael Blake": 0.89,
+    "Whitney Tilson": 0.51 
   });
 
   // Normalize the initial votes when component mounts to ensure they add up to 100%
