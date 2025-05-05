@@ -5,8 +5,7 @@ import {
   IdeologyModifiers, 
   PreferenceMatrix,
   RoundResult,
-  Winner,
-  IdeologyType
+  Winner
 } from '../types';
 
 /**
@@ -33,11 +32,11 @@ export const calculatePreferenceMatrix = (
     
     otherCandidates.forEach(ranked => {
       // Base preference is proportional to initial vote percentage
-      let basePreference = otherTotalVotes > 0 ? (initialVotesData[ranked] || 0) / otherTotalVotes * 100 : 0;
+      const basePreference = otherTotalVotes > 0 ? (initialVotesData[ranked] || 0) / otherTotalVotes * 100 : 0;
       
       // Apply ideological modifier
       const modifier = modifiers[ranked];
-      let adjustedPreference = basePreference * (1 + modifier);
+      const adjustedPreference = basePreference * (1 + modifier);
       
       // Ensure preference is not negative
       matrix[voter][ranked] = Math.max(0, adjustedPreference);
@@ -95,26 +94,35 @@ export const runRCVSimulation = (
     previousRoundPercentages = roundResults.length > 0 ? { ...roundResults[roundResults.length - 1].remainingPercentages } : null;
     
     // Calculate active votes total (should equal currentTotalVotes, but calculate to be sure)
-    const activeVotesTotal = activeCandidates.reduce((sum, candidate) => sum + currentRound[candidate], 0);
+    // Use a traditional for loop to avoid the loop function warning
+    let activeVotesTotal = 0;
+    for (let i = 0; i < activeCandidates.length; i++) {
+      activeVotesTotal += currentRound[activeCandidates[i]];
+    }
     
     // Calculate percentages of remaining ballots
     const remainingPercentages: VotePercentages = {};
-    activeCandidates.forEach(candidate => {
+    
+    // Avoid loop functions by using a traditional for loop
+    for (let i = 0; i < activeCandidates.length; i++) {
+      const candidate = activeCandidates[i];
       remainingPercentages[candidate] = activeVotesTotal > 0 
         ? (currentRound[candidate] / activeVotesTotal) * 100 
         : 0;
-    });
+    }
     
     // Calculate gains from previous round
     const votesGained: VotePercentages = {};
     
-    candidates.forEach(candidate => {
+    // Avoid loop functions by using a traditional for loop
+    for (let i = 0; i < candidates.length; i++) {
+      const candidate = candidates[i];
       if (previousRound) {
         votesGained[candidate] = currentRound[candidate] - (previousRound[candidate] || 0);
       } else {
         votesGained[candidate] = 0;
       }
-    });
+    }
     
     // Add current round to results
     roundResults.push({
@@ -132,40 +140,54 @@ export const runRCVSimulation = (
     let lowestVotes = Infinity;
     let lowestCandidate: string | null = null;
     
-    activeCandidates.forEach(candidate => {
+    // Avoid loop functions by using a traditional for loop
+    for (let i = 0; i < activeCandidates.length; i++) {
+      const candidate = activeCandidates[i];
       if (currentRound[candidate] < lowestVotes) {
         lowestVotes = currentRound[candidate];
         lowestCandidate = candidate;
       }
-    });
+    }
     
     // In case of a tie for lowest votes, use deterministic method to break tie
-    if (activeCandidates.filter(c => currentRound[c] === lowestVotes).length > 1) {
-      // Find all candidates tied for lowest
-      const tiedCandidates = activeCandidates.filter(c => currentRound[c] === lowestVotes);
-      
+    const tiedCandidates: string[] = [];
+    for (let i = 0; i < activeCandidates.length; i++) {
+      const candidate = activeCandidates[i];
+      if (currentRound[candidate] === lowestVotes) {
+        tiedCandidates.push(candidate);
+      }
+    }
+    
+    if (tiedCandidates.length > 1) {
       // Use alphabetical order as tiebreaker to ensure consistent results
       tiedCandidates.sort();
       lowestCandidate = tiedCandidates[0];
     }
 
     // Check if any candidate has majority of remaining votes
-    const hasWinner = activeCandidates.some(candidate => 
-      remainingPercentages[candidate] > 50
-    );
+    let hasWinner = false;
+    for (let i = 0; i < activeCandidates.length; i++) {
+      const candidate = activeCandidates[i];
+      if (remainingPercentages[candidate] > 50) {
+        hasWinner = true;
+        break;
+      }
+    }
     
     if (hasWinner) {
       let winningCandidate: string | null = null;
       let highestVotes = 0;
       let highestRemaining = 0;
       
-      activeCandidates.forEach(candidate => {
+      // Avoid loop functions by using a traditional for loop
+      for (let i = 0; i < activeCandidates.length; i++) {
+        const candidate = activeCandidates[i];
         if (currentRound[candidate] > highestVotes) {
           highestVotes = currentRound[candidate];
           highestRemaining = remainingPercentages[candidate];
           winningCandidate = candidate;
         }
-      });
+      }
       
       if (winningCandidate) {
         winner = {
@@ -210,13 +232,18 @@ export const runRCVSimulation = (
       
       // TypeScript needs this check even though we already checked above
       const candidate = lowestCandidate; // Non-null assertion for TypeScript
-      activeCandidates.forEach(otherCandidate => {
+      
+      // Use a traditional for loop to avoid function in loop warnings
+      for (let i = 0; i < activeCandidates.length; i++) {
+        const otherCandidate = activeCandidates[i];
         rawPreferences[otherCandidate] = preferenceMatrix[candidate][otherCandidate];
         totalRawPreference += rawPreferences[otherCandidate];
-      });
+      }
       
       // Normalize these preferences to ensure they sum to 100% among active candidates
-      activeCandidates.forEach(candidate => {
+      // Use a traditional for loop to avoid function in loop warnings
+      for (let i = 0; i < activeCandidates.length; i++) {
+        const candidate = activeCandidates[i];
         // If there are no preferences for active candidates, distribute evenly
         if (totalRawPreference <= 0) {
           const redistributedVotes = votesToRedistribute / activeCandidates.length;
@@ -227,15 +254,19 @@ export const runRCVSimulation = (
           const redistributedVotes = votesToRedistribute * normalizedPreference;
           nextRound[candidate] += redistributedVotes;
         }
-      });
+      }
       
       // Reconcile vote totals to address floating-point precision issues
-      const calculatedTotal = activeCandidates.reduce((sum, candidate) => sum + nextRound[candidate], 0);
+      let calculatedTotal = 0;
+      for (let i = 0; i < activeCandidates.length; i++) {
+        calculatedTotal += nextRound[activeCandidates[i]];
+      }
       if (Math.abs(calculatedTotal - currentTotalVotes) > 0.0001) {
         const adjustmentFactor = currentTotalVotes / calculatedTotal;
-        activeCandidates.forEach(candidate => {
+        for (let i = 0; i < activeCandidates.length; i++) {
+          const candidate = activeCandidates[i];
           nextRound[candidate] *= adjustmentFactor;
-        });
+        }
       }
       
       // Mark eliminated candidate in this round's results
@@ -261,13 +292,15 @@ export const runRCVSimulation = (
     // Calculate gains from previous round
     const votesGained: VotePercentages = {};
     
-    candidates.forEach(candidate => {
+    // Avoid loop functions by using a traditional for loop
+    for (let i = 0; i < candidates.length; i++) {
+      const candidate = candidates[i];
       if (prevRound) {
         votesGained[candidate] = currentRound[candidate] - (prevRound[candidate] || 0);
       } else {
         votesGained[candidate] = 0;
       }
-    });
+    }
     
     // Calculate final percentages
     const initialPercentage = finalVotes;

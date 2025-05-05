@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Candidate, 
   VotePercentages, 
@@ -19,7 +19,8 @@ import WinnerDisplay from './WinnerDisplay';
 import RoundResults from './RoundResults';
 
 const NYCRCVSimulator: React.FC = () => {
-  const candidates: Candidate[] = [
+  // Use useMemo to avoid recreating the array on each render
+  const candidates = useMemo<Candidate[]>(() => [
     "Andrew Cuomo",
     "Brad Lander",
     "Adrienne Adams",
@@ -29,7 +30,7 @@ const NYCRCVSimulator: React.FC = () => {
     "Scott Stringer",
     "Michael Blake",
     "Whitney Tilson"
-  ];
+  ], []);
 
   // State for initial vote percentages based on recent polling data
   const [initialVotes, setInitialVotes] = useState<VotePercentages>({
@@ -57,6 +58,7 @@ const NYCRCVSimulator: React.FC = () => {
       }
       setInitialVotes(normalizedInitial);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // State for ballot exhaustion rates based on candidate profiles
@@ -139,7 +141,7 @@ const NYCRCVSimulator: React.FC = () => {
   });
   
   // Available ideological groups
-  const ideologicalGroups = ["progressive", "moderate", "conservative"];
+  const ideologicalGroups = useMemo(() => ["progressive", "moderate", "conservative"], []);
   
   // Handle change to a candidate's ideological group
   const handleIdeologyChange = (candidate: Candidate, newIdeology: string) => {
